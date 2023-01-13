@@ -1,16 +1,104 @@
-# This is a sample Python script.
+import csv
+import spacy
+from matplotlib import pyplot as plt
+from spacytextblob.spacytextblob import SpacyTextBlob
+import numpy as np
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+nlp = spacy.load("en_core_web_sm")
+nlp.add_pipe('spacytextblob')
+
+with open("test.csv", "r") as csvfile:
+    test_row_count = sum(1 for line in csvfile) - 1
+    print("Test set length:", test_row_count)
+
+with open("train.csv", "r") as csvfile:
+    train_row_count = sum(1 for line in csvfile)-1
+    print("Train set length:", train_row_count)
+
+def test():
+    #https://pypi.org/project/spacytextblob/
+    #https://spacy.io/universe/project/spacy-textblob
+    i = 0
+    with open("test.csv", "r") as csvfile:
+        datareader = csv.reader(csvfile)
+        x = np.zeros(5)
+        y = np.arange(1,6)
+        for row in datareader:
+            if row[0] == 'Review':
+                continue
+            review = nlp(row[0])
+            # print("Polarity:",review._.blob.polarity)
+            polarity = review._.blob.polarity
+            # print("Subjectivity: ", review._.blob.subjectivity)
+            subjectivity = review._.blob.subjectivity
+            # print(review._.blob.sentiment_assessments.assessments)
+            sentiment_list = review._.blob.sentiment_assessments.assessments
+            postive = 0
+            neutral = 0
+            negative = 0
+            for tuple in sentiment_list:
+                if tuple[1] > 0:
+                    postive += 1
+                elif tuple[1]:
+                    negative += 1
+                else:
+                    neutral += 1
+            x[int(row[1])-1] += 1
+            # print("Positive:", postive)
+            # print("Neutral:", neutral)
+            # print("Negative:", negative)
+            # print("Rating:",row[1])
+            # print("-----------------")
+            i += 1
+            if i % 100 == 0:
+                print(round(((i/test_row_count)*100),2),"%")
+    plt.bar(y,x)
+    plt.title("Test set ratings")
+    plt.show()
+    plt.savefig("test.png")
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def train():
+    # https://pypi.org/project/spacytextblob/
+    # https://spacy.io/universe/project/spacy-textblob
+    i = 0
+    with open("train.csv", "r") as csvfile:
+        datareader = csv.reader(csvfile)
+        x = np.zeros(5)
+        y = np.arange(1,6)
+        for row in datareader:
+            if row[0] == 'Review':
+                continue
+            review = nlp(row[0])
+            # print("Polarity:",review._.blob.polarity)
+            polarity = review._.blob.polarity
+            # print("Subjectivity: ", review._.blob.subjectivity)
+            subjectivity = review._.blob.subjectivity
+            # print(review._.blob.sentiment_assessments.assessments)
+            sentiment_list = review._.blob.sentiment_assessments.assessments
+            postive = 0
+            neutral = 0
+            negative = 0
+            for tuple in sentiment_list:
+                if tuple[1] > 0:
+                    postive += 1
+                elif tuple[1]:
+                    negative += 1
+                else:
+                    neutral += 1
+            x[int(row[1])-1] += 1
+            # print("Positive:", postive)
+            # print("Neutral:", neutral)
+            # print("Negative:", negative)
+            # print("Rating:",row[1])
+            # print("-----------------")
+            i += 1
+            if i % 100 == 0:
+                print(round(((i / train_row_count) * 100), 2), "%")
+    plt.bar(y, x)
+    plt.title("Train set ratings")
+    plt.show()
+    plt.savefig("train.png")
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+test()
+train()
