@@ -210,6 +210,11 @@ def polynomial_regression_predict():
         pol_reg = LinearRegression()
         pol_reg.fit(X_poly, y_train)
         prediction = pol_reg.predict(poly_reg.fit_transform(X_test))
+        for i in range(test_row_count):
+            if prediction[i] > 5:
+                prediction[i] = 5
+            elif prediction[i] < 1:
+                prediction[i] = 1
         avg_mean = 0
         avg_mean_sq = 0
         for i in range(test_row_count):
@@ -273,6 +278,10 @@ def polynomial_regression_predict_input():
         review = input("Type your review: ")
         X_test = sentiment_analysis(review)
         prediction = pol_reg.predict(poly_reg.fit_transform(X_test))
+        if prediction > 5:
+            prediction = 5
+        elif prediction < 1:
+            prediction = 1
         print(prediction[0])
 
 
