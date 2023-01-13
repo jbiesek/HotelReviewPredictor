@@ -10,7 +10,7 @@ At the beggining it uses Spacy NLP kit to conduct an analysis on review's polari
 | :-------- | :------- | :------- | :------- | :------- | :------- | 
 |0.41944444444444445 | 0.7583333333333334 | 5 | 1 | 0 | 5 |
 
-Having that, it creates Linear Regression or Logistic Regression model from sklearn.
+Having that, it creates Linear Regression, Logistic Regression or Polynomial Regression model from sklearn.
 
 #### Linear Regression test result:
 
@@ -19,3 +19,7 @@ Having that, it creates Linear Regression or Logistic Regression model from skle
 #### Logistic Regression test result:
 
   `Average mean: 0.6898449224612306 Average mean^2: 1.1520760380190096`
+
+#### Polynomial Regression test result:
+
+  `Average mean: 0.6844777777217902 Average mean^2: 0.7588329790461141`
