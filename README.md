@@ -22,4 +22,4 @@ Having that, it creates Linear Regression, Logistic Regression or Polynomial Reg
 
 #### Polynomial Regression test result:
 
-  `Average mean: 0.6844777777217902 Average mean^2: 0.7588329790461141`
+  `Average mean: 0.6815999463717209 Average mean^2: 0.7554775274387878`
