@@ -194,6 +194,40 @@ def logistic_regression_predict():
         txt = "Average mean: " + str(avg_mean) + " Average mean^2: " + str(avg_mean_sq)
         f.write(txt)
 
+def polynomial_regression_predict():
+    # https://towardsdatascience.com/machine-learning-polynomial-regression-with-python-5328e4e8a386
+
+    with open('polynomial_regression_predictions.txt', 'w') as f:
+        train = pd.read_csv("train_sentiment.csv")
+        test = pd.read_csv("test_sentiment.csv")
+        predictors = ["Polarity", "Subjectivity", "Positive", "Neutral", "Negative"]
+        X_train = train[predictors]
+        y_train = train["Rating"]
+        X_test = test[predictors]
+        y_test = test["Rating"]
+        poly_reg = PolynomialFeatures(degree=5)
+        X_poly = poly_reg.fit_transform(X_train)
+        pol_reg = LinearRegression()
+        pol_reg.fit(X_poly, y_train)
+        prediction = pol_reg.predict(poly_reg.fit_transform(X_test))
+        avg_mean = 0
+        avg_mean_sq = 0
+        for i in range(test_row_count):
+            mean = abs(prediction[i] - y_test[i])
+            mean_sq = (abs(prediction[i] - y_test[i])) ** 2
+            print("Predicted rating:", prediction[i], "Actual rating:", y_test[i], "Mean:", mean, "Mean^2:", mean_sq)
+            txt = "Predicted rating: " + str(prediction[i]) + " Actual rating: " + str(y_test[i]) + " Mean: " + str(
+                mean) + " Mean^2: " + str(mean_sq)
+            f.write(txt)
+            f.write("\n")
+            avg_mean += mean
+            avg_mean_sq += mean_sq
+        avg_mean = avg_mean / test_row_count
+        avg_mean_sq = avg_mean_sq / test_row_count
+        print("Average mean:", avg_mean, "Average mean^2:", avg_mean_sq)
+        txt = "Average mean: " + str(avg_mean) + " Average mean^2: " + str(avg_mean_sq)
+        f.write(txt)
+
 
 def linear_regression_predict_input():
     train = pd.read_csv("train_sentiment.csv")
@@ -226,10 +260,27 @@ def logistic_regression_predict_input():
         prediction = lm.predict(X_test)
         print(prediction[0])
 
+def polynomial_regression_predict_input():
+    train = pd.read_csv("train_sentiment.csv")
+    predictors = ["Polarity", "Subjectivity", "Positive", "Neutral", "Negative"]
+    X_train = train[predictors]
+    y_train = train["Rating"]
+    poly_reg = PolynomialFeatures(degree=5)
+    X_poly = poly_reg.fit_transform(X_train)
+    pol_reg = LinearRegression()
+    pol_reg.fit(X_poly, y_train)
+    while (1):
+        review = input("Type your review: ")
+        X_test = sentiment_analysis(review)
+        prediction = pol_reg.predict(poly_reg.fit_transform(X_test))
+        print(prediction[0])
+
 
 # test()
 # train()
 # linear_regression_predict()
 # logistic_regression_predict()
+# polynomial_regression_predict()
 linear_regression_predict_input()
 # logistic_regression_predict_input()
+# polynomial_regression_predict_input()
