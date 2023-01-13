@@ -52,10 +52,12 @@ def test():
             i += 1
             if i % 100 == 0:
                 print(round(((i/test_row_count)*100),2),"%")
+    fig = plt.figure()
     plt.bar(y,x)
     plt.title("Test set ratings")
     plt.show()
-    plt.savefig("test.png")
+    fig.savefig("test.png")
+    plt.close()
 
 
 def train():
@@ -95,10 +97,12 @@ def train():
             i += 1
             if i % 100 == 0:
                 print(round(((i / train_row_count) * 100), 2), "%")
+    fig = plt.figure()
     plt.bar(y, x)
     plt.title("Train set ratings")
     plt.show()
-    plt.savefig("train.png")
+    fig.savefig("train.png")
+    plt.close()
 
 test()
 train()
