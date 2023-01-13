@@ -7,6 +7,8 @@ import numpy as np
 nlp = spacy.load("en_core_web_sm")
 nlp.add_pipe('spacytextblob')
 
+
+# https://www.kaggle.com/datasets/andrewmvd/trip-advisor-hotel-reviews?resource=download
 with open("test.csv", "r") as csvfile:
     test_row_count = sum(1 for line in csvfile) - 1
     print("Test set length:", test_row_count)
@@ -16,42 +18,39 @@ with open("train.csv", "r") as csvfile:
     print("Train set length:", train_row_count)
 
 def test():
-    #https://pypi.org/project/spacytextblob/
-    #https://spacy.io/universe/project/spacy-textblob
+    # https://pypi.org/project/spacytextblob/
+    # https://spacy.io/universe/project/spacy-textblob
     i = 0
     with open("test.csv", "r") as csvfile:
-        datareader = csv.reader(csvfile)
-        x = np.zeros(5)
-        y = np.arange(1,6)
-        for row in datareader:
-            if row[0] == 'Review':
-                continue
-            review = nlp(row[0])
-            # print("Polarity:",review._.blob.polarity)
-            polarity = review._.blob.polarity
-            # print("Subjectivity: ", review._.blob.subjectivity)
-            subjectivity = review._.blob.subjectivity
-            # print(review._.blob.sentiment_assessments.assessments)
-            sentiment_list = review._.blob.sentiment_assessments.assessments
-            postive = 0
-            neutral = 0
-            negative = 0
-            for tuple in sentiment_list:
-                if tuple[1] > 0:
-                    postive += 1
-                elif tuple[1]:
-                    negative += 1
-                else:
-                    neutral += 1
-            x[int(row[1])-1] += 1
-            # print("Positive:", postive)
-            # print("Neutral:", neutral)
-            # print("Negative:", negative)
-            # print("Rating:",row[1])
-            # print("-----------------")
-            i += 1
-            if i % 100 == 0:
-                print(round(((i/test_row_count)*100),2),"%")
+        with open('test_sentiment.csv', 'w') as f:
+            datareader = csv.reader(csvfile)
+            writer = csv.writer(f)
+            x = np.zeros(5)
+            y = np.arange(1,6)
+            writer.writerow(["Polarity", "Subjectivity", "Positive", "Neutral", "Negative", "Rating"])
+            for row in datareader:
+                if row[0] == 'Review':
+                    continue
+                review = nlp(row[0])
+                polarity = review._.blob.polarity
+                subjectivity = review._.blob.subjectivity
+                sentiment_list = review._.blob.sentiment_assessments.assessments
+                postive = 0
+                neutral = 0
+                negative = 0
+                for tuple in sentiment_list:
+                    if tuple[1] > 0:
+                        postive += 1
+                    elif tuple[1]:
+                        negative += 1
+                    else:
+                        neutral += 1
+                x[int(row[1])-1] += 1
+                data = [polarity, subjectivity, postive, neutral, negative, row[1]]
+                writer.writerow(data)
+                i += 1
+                if i % 100 == 0:
+                    print(round(((i/test_row_count)*100),2),"%")
     fig = plt.figure()
     plt.bar(y,x)
     plt.title("Test set ratings")
@@ -65,38 +64,35 @@ def train():
     # https://spacy.io/universe/project/spacy-textblob
     i = 0
     with open("train.csv", "r") as csvfile:
-        datareader = csv.reader(csvfile)
-        x = np.zeros(5)
-        y = np.arange(1,6)
-        for row in datareader:
-            if row[0] == 'Review':
-                continue
-            review = nlp(row[0])
-            # print("Polarity:",review._.blob.polarity)
-            polarity = review._.blob.polarity
-            # print("Subjectivity: ", review._.blob.subjectivity)
-            subjectivity = review._.blob.subjectivity
-            # print(review._.blob.sentiment_assessments.assessments)
-            sentiment_list = review._.blob.sentiment_assessments.assessments
-            postive = 0
-            neutral = 0
-            negative = 0
-            for tuple in sentiment_list:
-                if tuple[1] > 0:
-                    postive += 1
-                elif tuple[1]:
-                    negative += 1
-                else:
-                    neutral += 1
-            x[int(row[1])-1] += 1
-            # print("Positive:", postive)
-            # print("Neutral:", neutral)
-            # print("Negative:", negative)
-            # print("Rating:",row[1])
-            # print("-----------------")
-            i += 1
-            if i % 100 == 0:
-                print(round(((i / train_row_count) * 100), 2), "%")
+        with open('train_sentiment.csv', 'w') as f:
+            datareader = csv.reader(csvfile)
+            writer = csv.writer(f)
+            x = np.zeros(5)
+            y = np.arange(1, 6)
+            writer.writerow(["Polarity", "Subjectivity", "Positive", "Neutral", "Negative", "Rating"])
+            for row in datareader:
+                if row[0] == 'Review':
+                    continue
+                review = nlp(row[0])
+                polarity = review._.blob.polarity
+                subjectivity = review._.blob.subjectivity
+                sentiment_list = review._.blob.sentiment_assessments.assessments
+                postive = 0
+                neutral = 0
+                negative = 0
+                for tuple in sentiment_list:
+                    if tuple[1] > 0:
+                        postive += 1
+                    elif tuple[1]:
+                        negative += 1
+                    else:
+                        neutral += 1
+                x[int(row[1])-1] += 1
+                i += 1
+                data = [polarity, subjectivity, postive, neutral, negative, row[1]]
+                writer.writerow(data)
+                if i % 100 == 0:
+                    print(round(((i / train_row_count) * 100), 2), "%")
     fig = plt.figure()
     plt.bar(y, x)
     plt.title("Train set ratings")
