@@ -1,5 +1,5 @@
-# HotelReviewPredictor
-Hotel review predictor written in Python. It uses 18492 TripAdvisor reviews to train and 1999 reviews to test.
+# HotelReviewRatingPredictor
+Hotel review rating predictor written in Python. It uses 18492 TripAdvisor reviews to train and 1999 reviews to test.
 | Review | Rating     | 
 | :-------- | :------- | 
 | "nice boutique hotel stayed 5 nights, rooms nice clean place pretty, location good central singapore" | 5 | 
